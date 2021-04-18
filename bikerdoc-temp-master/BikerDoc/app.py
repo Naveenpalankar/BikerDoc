@@ -69,75 +69,7 @@ def addItem():
         conn.close()
         print(msg)
         return redirect(url_for('root'))
-
-#Api to remove item from database
-@app.route("/api/removeItem",methods = ['DELETE'])
-def removeItem():
-    productId = request.args.get('productId')
-    with sqlite3.connect('database.db') as conn:
-        try:
-            cur = conn.cursor()
-            cur.execute('DELETE FROM products WHERE productID = ' + productId)
-            conn.commit()
-            msg = "Deleted successsfully"
-        except:
-            conn.rollback()
-            msg = "Error occured"
-            conn.close()
-        print(msg)
-    return msg
-    #return redirect(url_for('root'))
-
-# Api to fetch users data
-@app.route("/api/getallusers",methods = ['GET'])
-def getallusers():
-    with sqlite3.connect('database.db') as conn:
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM users")
-        res = cur.fetchall()
-    conn.close()
-    res1= json.dumps(res)
-    #print(str(res))
-    return res1
     
-### 
-# Add user into database 
-
-@app.route("/api/registernew", methods = ['POST'])
-def registernew():
-    if request.method == 'POST':
-           
-        password = request.args.get('password')
-        email = request.args.get('email')
-        firstName = request.args.get('firstName')
-        lastName = request.args.get('lastName')
-        address1 = request.args.get('address1')
-        address2 = request.args.get('address2')
-        zipcode = request.args.get('zipcode')
-        city = request.args.get('city')
-        state = request.args.get('state')
-        country = request.args.get('country')
-        phone = request.args.get('phone')
-
-        with sqlite3.connect('database.db') as con:
-            try:
-                cur = con.cursor()
-                cur.execute('INSERT INTO users (password, email, firstName, lastName, address1, address2, zipcode, city, state, country, phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (hashlib.md5(password.encode()).hexdigest(), email, firstName, lastName, address1, address2, zipcode, city, state, country, phone))
-
-                con.commit()
-
-                msg = "Registered Successfully"
-            except:
-                con.rollback()
-                msg = "Error occured"
-        con.close()
-    return msg
-
-
-
-
-
-##
 #Display all items of a category
 @app.route("/displayCategory")
 def displayCategory():
